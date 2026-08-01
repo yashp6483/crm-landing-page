@@ -185,6 +185,22 @@ export default function HRMSPage() {
             </select>
           </div>
 
+          <button
+            onClick={async () => {
+              toast.loading("Populating MongoDB employee database...", { id: "seedDb" });
+              const res = await fetch("/api/seed", { method: "POST" });
+              if (res.ok) {
+                toast.success("MongoDB database seeded with employee & workforce data!", { id: "seedDb" });
+                fetchData();
+              } else {
+                toast.error("Failed to seed database", { id: "seedDb" });
+              }
+            }}
+            className="px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-semibold text-emerald-400 hover:bg-slate-800 hover:text-white transition-colors cursor-pointer"
+          >
+            Seed Database
+          </button>
+
           <ButtonRipple onClick={handleClockIn} variant="primary" size="md">
             <MapPin className="w-4 h-4" />
             <span>Clock In (GPS Verified)</span>
