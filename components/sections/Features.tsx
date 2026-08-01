@@ -139,6 +139,22 @@ export const Features: React.FC = () => {
                   </div>
                 ))}
               </div>
+
+              <div className="pt-2">
+                <a
+                  href={
+                    activeFeature.id === "lead-management"
+                      ? "/dashboard/leads"
+                      : activeFeature.id === "hrms"
+                      ? "/dashboard/hrms"
+                      : "/dashboard/invoicing"
+                  }
+                  className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 font-extrabold text-xs shadow-lg hover:shadow-emerald-500/25 transition-all"
+                >
+                  <span>Launch {activeFeature.title.split(" ")[0]} Cockpit</span>
+                  <ArrowRight className="w-4 h-4" />
+                </a>
+              </div>
             </div>
 
             {/* Right Interactive 3D Tilt Mockup Display */}
@@ -259,36 +275,67 @@ export const Features: React.FC = () => {
 
         {/* 3 Module Overview Cards Grid with 3D Tilt */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
-          {FEATURES_DATA.map((item) => (
-            <div
-              key={item.id}
-              onClick={() => setActiveTabId(item.id)}
-              className="feature-scroll-card cursor-pointer"
-            >
-              <TiltCard
-                tiltAmount={12}
-                className={`h-full transition-all duration-300 ${
-                  item.id === activeTabId
-                    ? "border-emerald-500/50 bg-slate-900/90 shadow-lg shadow-emerald-950/40"
-                    : "border-slate-800/80 hover:border-slate-700"
-                }`}
+          {FEATURES_DATA.map((item) => {
+            const moduleRoute =
+              item.id === "lead-management"
+                ? "/dashboard/leads"
+                : item.id === "hrms"
+                ? "/dashboard/hrms"
+                : "/dashboard/invoicing";
+
+            return (
+              <div
+                key={item.id}
+                onClick={() => {
+                  setActiveTabId(item.id);
+                  const el = document.getElementById("features");
+                  el?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="feature-scroll-card cursor-pointer"
               >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800">
-                    {renderIcon(item.iconName)}
+                <TiltCard
+                  tiltAmount={12}
+                  className={`h-full transition-all duration-300 flex flex-col justify-between ${
+                    item.id === activeTabId
+                      ? "border-emerald-500/50 bg-slate-900/90 shadow-lg shadow-emerald-950/40"
+                      : "border-slate-800/80 hover:border-slate-700"
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800">
+                        {renderIcon(item.iconName)}
+                      </div>
+                      <h4 className="text-lg font-bold text-white">
+                        {item.title.split(" ")[0]} {item.title.split(" ")[1]}
+                      </h4>
+                    </div>
+                    <p className="text-xs text-slate-400 leading-relaxed mb-4">{item.tagline}</p>
                   </div>
-                  <h4 className="text-lg font-bold text-white">
-                    {item.title.split(" ")[0]} {item.title.split(" ")[1]}
-                  </h4>
-                </div>
-                <p className="text-xs text-slate-400 leading-relaxed mb-4">{item.tagline}</p>
-                <div className="flex items-center text-xs font-semibold text-emerald-400 gap-1 group-hover:gap-2 transition-all">
-                  <span>Explore Module</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </div>
-              </TiltCard>
-            </div>
-          ))}
+
+                  <div className="flex items-center justify-between pt-4 border-t border-slate-800/60">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActiveTabId(item.id);
+                      }}
+                      className="text-xs font-semibold text-slate-300 hover:text-white"
+                    >
+                      Preview Demo
+                    </button>
+                    <a
+                      href={moduleRoute}
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex items-center text-xs font-bold text-emerald-400 hover:text-emerald-300 gap-1.5 hover:gap-2 transition-all px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30"
+                    >
+                      <span>Explore Module</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                </TiltCard>
+              </div>
+            );
+          })}
         </div>
 
       </div>
