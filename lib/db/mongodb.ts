@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { ensureDatabaseSeeded } from "@/lib/db/seedHelper";
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/orbit360_crm";
 
@@ -29,11 +30,12 @@ export async function connectToDatabase(): Promise<typeof mongoose> {
       serverSelectionTimeoutMS: 2000,
     };
 
-    cached!.promise = mongoose.connect(MONGODB_URI, opts).then((m) => {
+    cached!.promise = mongoose.connect(MONGODB_URI, opts).then(async (m) => {
       console.log("Connected to MongoDB database successfully.");
+      await ensureDatabaseSeeded();
       return m;
     }).catch((err) => {
-      console.warn("MongoDB connection fallback to memory/mock state:", err.message);
+      console.warn("MongoDB connection fallback state:", err.message);
       return mongoose;
     });
   }

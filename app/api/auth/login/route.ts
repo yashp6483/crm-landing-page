@@ -16,23 +16,12 @@ export async function POST(req: Request) {
     const user = await UserModel.findOne({ email: email.toLowerCase() });
 
     if (!user) {
-      // Return clear error or fallback token if database isn't populated
-      return NextResponse.json({
-        success: true,
-        token: "demo-jwt-token-orbit360",
-        user: {
-          id: "u-demo",
-          name: email.split("@")[0],
-          email: email,
-          role: "ADMIN",
-          department: "Executive",
-        },
-      });
+      return NextResponse.json({ success: false, message: "Invalid email or password. User not found in database." }, { status: 401 });
     }
 
     const isMatch = await verifyPassword(password, user.passwordHash);
     if (!isMatch) {
-      return NextResponse.json({ success: false, message: "Invalid email or password" }, { status: 401 });
+      return NextResponse.json({ success: false, message: "Invalid email or password." }, { status: 401 });
     }
 
     const payload = {
@@ -41,6 +30,7 @@ export async function POST(req: Request) {
       email: user.email,
       role: user.role,
       department: user.department,
+      companyName: user.companyName,
     };
 
     const token = signAccessToken(payload);
@@ -58,6 +48,7 @@ export async function POST(req: Request) {
         name: user.name,
         email: user.email,
         role: user.role,
+        companyName: user.companyName || "Orbit Global Technologies",
         department: user.department,
         avatarUrl: user.avatarUrl,
       },
